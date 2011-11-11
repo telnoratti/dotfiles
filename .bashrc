@@ -16,4 +16,4 @@ alias p2='python2.7'
 #Django shortcut
 alias pyman='python2.7 ./manage.py'
 
-export PS1='\[\e[0;34m\]\A\[\e[m\]\[\e[1;32m\]::\[\e[m\]\[\e[0;34m\][\u@\h]\[\e[m\]\[\e[1;32m\]::\[\e[m\]\[\e[0;34m\]\w\[\e[m\]\[\e[1;32m\]\$\[\e[m\] \[\e[0;32m\]'
+export PS1='\[\e[0;34m\]\A\[\e[m\]\[\e[1;32m\]::\[\e[m\]\[\e[0;34m\][\u@\h]\[\e[m\]\[\e[1;32m\]::\[\e[m\]\[\e[0;34m\]\w\[\e[m\]\[\e[0;32m\]\$\[\e[m\] '
