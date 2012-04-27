@@ -2,7 +2,7 @@
 " Cterm addition: Paul deGrandis
 " Last Change:	January 22 2007
 
-set background=dark
+" set background=dark
 
 hi clear
 
@@ -24,8 +24,8 @@ endif
 
 " General colors
 hi Cursor 		guifg=NONE    guibg=#656565 gui=none   ctermfg=NONE ctermbg=241  cterm=none
-hi Normal 		guifg=#f6f3e8 guibg=#242424 gui=none   ctermfg=230  ctermbg=235  cterm=none
-hi NonText 		guifg=#808080 guibg=#303030 gui=none   ctermfg=244  ctermbg=236  cterm=none
+" hi Normal 		guifg=#f6f3e8 guibg=#242424 gui=none   ctermfg=230  ctermbg=235  cterm=none
+"hi NonText 		guifg=#808080 guibg=#303030 gui=none   ctermfg=244  ctermbg=236  cterm=none
 hi LineNr 		guifg=#857b6f guibg=#000000 gui=none   ctermfg=101  ctermbg=0    cterm=none
 hi StatusLine 	guifg=#f6f3e8 guibg=#444444 gui=italic ctermfg=230  ctermbg=238	 cterm=italic
 hi StatusLineNC guifg=#857b6f guibg=#444444 gui=none   ctermfg=101  ctermbg=238  cterm=none

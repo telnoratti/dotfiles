@@ -1,13 +1,6 @@
-inoremap  <Up>     <NOP>
-inoremap  <Down>   <NOP>
-inoremap  <Left>   <NOP>
-inoremap  <Right>  <NOP>
-nnoremap   <Up>     <NOP>
-nnoremap   <Down>   <NOP>
-nnoremap   <Left>   <NOP>
-nnoremap   <Right>  <NOP>
+:filetype plugin on
 
-colorscheme wombat
+colorscheme sunburst
 syntax enable
 set nu
 
