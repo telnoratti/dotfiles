@@ -33,6 +33,9 @@ setopt autocd
 unsetopt beep
 bindkey -v
 # End of lines configured by zsh-newuser-install
+
+compdef mosh=ssh
+
 if [ "$SSH_CONNECTION" ]; then
     CONNECTION=">>"
 else
@@ -51,7 +54,7 @@ alias grep='grep --color'
 alias acpi='acpi -V'
 alias vstartx='startx & vlock'
 alias le='less'
-
+alias kill-all-orphans='sudo pacman -Rs $(pacman -Qtdq)'
 
 bindkey "^[[1~" beginning-of-line
 bindkey "^[[4~" end-of-line
