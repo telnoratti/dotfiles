@@ -1,6 +1,7 @@
 autoload -U colors && colors
-TERM=xterm-256color
-PATH=$PATH:$HOME/bin
+export TERM=xterm-256color
+export PATH=$PATH:$HOME/bin
+export EDITOR=vim
 # The following lines were added by compinstall
 
 zstyle ':completion:*' completer _expand _complete _ignored _approximate
@@ -34,7 +35,16 @@ unsetopt beep
 bindkey -v
 # End of lines configured by zsh-newuser-install
 
-compdef mosh=ssh
+if [ -f "${HOME}/.gpg-agent-info" ]; then
+    . "${HOME}/.gpg-agent-info"
+    export GPG_AGENT_INFO
+    export SSH_AUTH_SOCK
+fi
+
+GPG_TTY=$(tty)
+export GPG_TTY
+
+[ -n "$TMUX" ] && export TERM=screen-256color
 
 if [ "$SSH_CONNECTION" ]; then
     CONNECTION=">>"
@@ -42,7 +52,7 @@ else
     CONNECTION=""
 fi
 
-PROMPT="%{$fg[red]%}$CONNECTION%{$fg[blue]%}%n%{$fg[green]%}@%{$fg[blue]%}%m%{$fg[green]%}::%{$fg[blue]%}%3/%{$fg[green]%}$%{$reset_color%} "
+PROMPT="%{$fg[red]%}$CONNECTION%{$fg[blue]%}%n%{$fg[green]%}@%{$fg[blue]%}%m%{$fg[green]%}::%{$fg[blue]%}%2/%{$fg[green]%}$%{$reset_color%} "
 RPROMPT="%{$fg[blue]%}%D{%M}%{$fg[green]%}.%{$fg[blue]%}%D{%H}%{$fg[green]%}-%{$fg[blue]%}%D{%d}%{$reset_color%}"
 
 alias ls='ls --color=auto'
@@ -50,11 +60,18 @@ alias la='ls -a'
 alias l='ls -l'
 alias rm='rm -v'
 alias cp='cp -v'
+alias mv='mv -v'
 alias grep='grep --color'
 alias acpi='acpi -V'
 alias vstartx='startx & vlock'
 alias le='less'
 alias kill-all-orphans='sudo pacman -Rs $(pacman -Qtdq)'
+alias slay="killall -9"
 
-bindkey "^[[1~" beginning-of-line
-bindkey "^[[4~" end-of-line
+export LESS_TERMCAP_mb=$(printf "\e[1;31m")
+export LESS_TERMCAP_md=$(printf "\e[1;31m")
+export LESS_TERMCAP_me=$(printf "\e[0m")
+export LESS_TERMCAP_se=$(printf "\e[0m")
+export LESS_TERMCAP_so=$(printf "\e[1;44;33m")
+export LESS_TERMCAP_ue=$(printf "\e[0m")
+export LESS_TERMCAP_us=$(printf "\e[1;32m")

@@ -1,7 +1,11 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =5
-let g:netrw_dirhist_1='/usr/lib/python2.7/site-packages/scrapy/contrib/linkextractors'
-let g:netrw_dirhist_2='/usr/lib/python2.7/site-packages/scrapy/contrib'
-let g:netrw_dirhist_3='/usr/lib/python2.7/site-packages/scrapy/contrib/spiders'
-let g:netrw_dirhist_4='/etc/X11/xorg.conf.d'
-let g:netrw_dirhist_5='/home/calvin/projects/2506/project4'
+let g:netrw_dirhist_cnt =9
+let g:netrw_dirhist_1='/home/calvin/.phenny'
+let g:netrw_dirhist_2='/home/calvin/projects/4175'
+let g:netrw_dirhist_3='/home/calvin/projects/3124'
+let g:netrw_dirhist_4='/home/calvin/projects/3214/esh20120918/group274/malloclab'
+let g:netrw_dirhist_5='/home/calvin/projects/eceks/puppet/modules/authpackages'
+let g:netrw_dirhist_6='/home/calvin/projects/eceks/puppet/modules/authpackages/manifests'
+let g:netrw_dirhist_7='/home/calvin/projects/eceks/puppet/modules/utilities/manifests'
+let g:netrw_dirhist_8='/home/calvin/projects/eceks/puppet/modules/authpackages/files/keys'
+let g:netrw_dirhist_9='/home/calvin/.crawl'
