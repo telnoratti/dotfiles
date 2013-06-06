@@ -1,0 +1,188 @@
+typeset -gA prompt_pre \
+            prompt_post \
+            prompt_token
+
+prompt_pre=(
+    at                '%F{green}'
+    conn              '%F{red}'
+    date              '%F{blue}'
+    history           '%F{green}'
+    host              '%B%F{blue}'
+    jobs              '%F{cyan}'
+    newline           ''
+    path              '%B'
+    percent           '%F{red}'
+    rc                '%F{red}'
+    sad-smiley        '%B'
+    shell-level       '%F{red}'
+    time              '%F{blue}'
+    user              '%B%F{blue}'
+    vcs               ''
+)
+
+prompt_post=(
+    at                '%f'
+    conn              '%f'
+    date              '%f'
+    history           '%f'
+    host              '%f%b'
+    jobs              '%f'
+    newline           ''
+    path              '%b'
+    percent           '%f'
+    rc                '%f'
+    sad-smiley        '%b'
+    shell-level       '%f'
+    time              '%f'
+    user              '%f%b'
+    vcs               ''
+)
+
+prompt_token=(
+    at                '@'
+    conn              '>>'
+    date              '%D{%Y-%m-%d}'
+    history           '{history#%!} '
+    host              '%m '
+    jobs              '[%j running job(s)] '
+    newline           $'\n'
+    path              '%20<..<%~%<< '
+    percent           '%# '
+    rc                '%(?..%? )'
+    sad-smiley        '%(?..:()'
+    shell-level       '%(3L.+ .)'
+    time              '%D{%H:%M:%S} '
+    user              '%n'
+    vcs               '0'
+)
+
+function add_and_wrap () {
+    emulate -L zsh
+    local target="$1"
+    local key="$2"
+    typeset -g "${target}=${(P)target}${prompt_pre[$key]}${prompt_token[$key]}${prompt_post[$key]}"
+}
+
+# secondary prompt, printed when the shell needs more information to complete a
+# command.
+PS2='\`%_> '
+# selection prompt used within a select loop.
+PS3='?# '
+# the execution trace prompt (setopt xtrace). default: '+%N:%i>'
+PS4='+%N:%i:%_> '
+
+PS1=""
+### rc
+add_and_wrap PS1 rc
+### conn
+if [ "$SSH_CONNECTION" ]; then
+    add_and_wrap PS1 conn
+fi
+### user
+add_and_wrap PS1 user
+### at
+add_and_wrap PS1 at
+### host
+add_and_wrap PS1 host
+
+CACHED_PS1=$PS1
+
+if zrcautoload vcs_info; then
+    zstyle ':vcs_info:*' max-exports 2
+
+    if [[ -o restricted ]]; then
+        zstyle ':vcs_info:*' enable NONE
+    fi
+fi
+
+# Change vcs_info formats for the grml prompt. The 2nd format sets up
+# $vcs_info_msg_1_ to contain "zsh: repo-name" used to set our screen title.
+# TODO: The included vcs_info() version still uses $VCS_INFO_message_N_.
+#       That needs to be the use of $VCS_INFO_message_N_ needs to be changed
+#       to $vcs_info_msg_N_ as soon as we use the included version.
+if [[ "$TERM" == dumb ]] ; then
+    zstyle ':vcs_info:*' actionformats "(%r%)-[%b|%a] " "zsh: %r"
+    zstyle ':vcs_info:*' formats       "(%r%)-[%b] "    "zsh: %r"
+else
+    # these are the same, just with a lot of colors:
+    zstyle ':vcs_info:*' actionformats "${MAGENTA}(${NO_COLOR}%r${YELLOW}:${CYAN}%s${MAGENTA})${YELLOW}-${MAGENTA}[${GREEN}%b${YELLOW}|${RED}%a${MAGENTA}]${NO_COLOR} %B%20<..<%S%<<%b " \
+                                       "zsh: %r"
+    zstyle ':vcs_info:*' formats       "${MAGENTA}(${NO_COLOR}%r${YELLOW}:${CYAN}%s${MAGENTA})${YELLOW}-${MAGENTA}[${GREEN}%b${MAGENTA}]${NO_COLOR} %B%20<..<%S%<<%%b " \
+                                       "zsh: %r"
+    zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat "%b${RED}:${YELLOW}%r"
+fi
+
+function prompt_telnor_setup() {
+    emulate -L zsh
+    autoload -Uz vcs_info
+    autoload -Uz add-zsh-hook
+    add-zsh-hook precmd prompt_telnor_precmd
+}
+
+function compose_prompt() {
+    emulate -L zsh
+    PS1=$1
+    RPS1=""
+    vcs_info
+    if [[ -z $vcs_info_msg_1_ ]]; then
+        ### path
+        add_and_wrap PS1 path
+    else
+        typeset -g "PS1=$PS1$vcs_info_msg_0_"
+    fi
+    add_and_wrap PS1 percent
+    add_and_wrap RPS1 sad-smiley
+}
+
+function prompt_telnor_precmd () {
+    emulate -L zsh
+    compose_prompt "$CACHED_PS1"
+}
+
+prompt_fallback() {
+    setopt prompt_subst
+    precmd() {
+        (( ${+functions[vcs_info]} )) && vcs_info
+    }
+
+    p0="${RED}%(?..%? )${WHITE}${debian_chroot:+($debian_chroot)}"
+    p1="${BLUE}%n${NO_COLOR}@%m %40<...<%B%~%b%<< "'${vcs_info_msg_0_}'"%# "
+    if (( EUID == 0 )); then
+        PROMPT="${BLUE}${p0}${RED}${p1}"
+    else
+        PROMPT="${RED}${p0}${BLUE}${p1}"
+    fi
+    unset p0 p1
+}
+
+if zrcautoload promptinit && promptinit 2>/dev/null ; then
+    # Since we define the required functions in here and not in files in
+    # $fpath, we need to stick the theme's name into `$prompt_themes'
+    # ourselves, since promptinit does not pick them up otherwise.
+    prompt_themes+=( telnor )
+    # Also, keep the array sorted...
+    prompt_themes=( "${(@on)prompt_themes}" )
+else
+    print 'Notice: no promptinit available :('
+    prompt_fallback
+fi
+
+if [[ "$TERM" == dumb ]] ; then
+    for i in rc user path jobs history date time shell-level; do
+        zstyle ":prompt:telnor:*:items:$i" pre ''
+        zstyle ":prompt:telnor:*:items:$i" post ''
+    done
+    unset i
+    zstyle ':prompt:telnor:right:setup' use-rprompt false
+elif (( EUID == 0 )); then
+    zstyle ':prompt:telnor:*:items:user' pre '%B%F{red}'
+fi
+
+# Finally enable one of the prompts.
+prompt telnor
+
+## END OF FILE #################################################################
+# vim:filetype=zsh foldmethod=marker autoindent expandtab shiftwidth=4
+# Local variables:
+# mode: sh
+# End:
