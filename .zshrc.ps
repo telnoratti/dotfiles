@@ -87,6 +87,10 @@ add_and_wrap PS1 host
 
 CACHED_PS1=$PS1
 
+PS1=""
+
+add_and_wrap RPS1 sad-smiley
+
 if zrcautoload vcs_info; then
     zstyle ':vcs_info:*' max-exports 2
 
@@ -122,7 +126,6 @@ function prompt_telnor_setup() {
 function compose_prompt() {
     emulate -L zsh
     PS1=$1
-    RPS1=""
     vcs_info
     if [[ -z $vcs_info_msg_1_ ]]; then
         ### path
@@ -131,7 +134,6 @@ function compose_prompt() {
         typeset -g "PS1=$PS1$vcs_info_msg_0_"
     fi
     add_and_wrap PS1 percent
-    add_and_wrap RPS1 sad-smiley
 }
 
 function prompt_telnor_precmd () {
