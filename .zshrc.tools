@@ -218,6 +218,14 @@ cdt() {
     builtin pushd "$(mktemp -d)" >& /dev/null
 }
 
+# Copy files to temporary directory
+cpt() {
+    local dir
+    dir=$(mktemp -d 2>/dev/null)
+    cp $@ $dir >& /dev/null
+    builtin pushd $dir >& /dev/null
+}
+
 #f5# List files which have been accessed within the last {\it n} days, {\it n} defaults to 1
 accessed() {
     emulate -L zsh
