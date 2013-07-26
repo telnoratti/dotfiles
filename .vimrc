@@ -1,4 +1,6 @@
-:filetype plugin on
+execute pathogen#infect()
+
+filetype plugin indent on
 
 colorscheme sunburst
 syntax enable
