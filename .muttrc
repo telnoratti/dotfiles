@@ -1,0 +1,124 @@
+# Change the following six lines to match your Gmail account details
+set realname = "Calvin Winkowski"
+
+# Change the following line to a different editor you prefer.
+set editor = "vim"
+hdr_order Date From To Cc
+alternative_order text/plain text/html *
+auto_view text/html
+
+set certificate_file=/etc/ssl/certs/ca-certificates.crt 
+
+set my_tmpsecret=`gpg2 -o ~/.sec/.tmp -d ~/.sec/pass.gpg`
+set my_pass_wi="`awk '/winkowski.me/ {print $2}' ~/.sec/.tmp`"
+set my_pass_vt=`echo \'\"$(awk '/cwinkows.vt/ {print $2}' ~/.sec/.tmp | sed "s/'/'\"'\"'/g" | sed "s/\`/\\\\\\\`/g")\"\'`
+set my_pass_te=`echo \'\"$(awk '/telnoratti.gmail/ {print $2}' ~/.sec/.tmp | sed "s/'/'\"'\"'/g" | sed "s/\`/\\\\\\\`/g")\"\'`
+set my_del=`rm -f ~/.sec/.tmp`
+
+account-hook . "unset imap_user; unset imap_pass; unset tunnel"
+account-hook        "imaps://calvin@winkowski.me@imap.gmail.com/" "\
+    set imap_user   = calvin@winkowski.me \
+        imap_pass   = $my_pass_wi"
+account-hook        "imaps://cwinkows@vt.edu@imap.gmail.com/" "\
+    set imap_user   = cwinkows@vt.edu \
+        imap_pass   = $my_pass_vt"
+account-hook        "imaps://telnoratti@gmail.com@imap.gmail.com/" "\
+    set imap_user   = telnoratti@gmail.com \
+        imap_pass   = $my_pass_te"
+
+#macro index <f5> "<enter-command>source ${HOME}/.mutt/gmail.com<enter><change-folder>=INBOX<enter>"
+#macro index <f6> "<enter-command>source ${HOME}/.mutt/winkowski.me<enter><change-folder>=INBOX<enter>"
+#macro index <f7> "<enter-command>source ${HOME}/.mutt/cwinkows.vt<enter><change-folder>=INBOX<enter>"
+macro index <f5> "y18<return><return>"
+macro index <f6> "y12<return><return>"
+macro index <f7> "y6<return><return>"
+
+macro attach W <save-entry><kill-line>/home/calvin/attachments/<enter>
+
+source ~/.mutt/winkowski.me
+source ~/.mutt/cwinkows.vt
+source ~/.mutt/gmail.com
+
+source ~/.mutt/mutt.gpg
+
+source ~/.mutt/colors.rc
+
+#-----------------------#
+# Gmail-specific macros #
+#-----------------------#
+# to delete more than 1 message, just mark them with "t" key and then do "d" on them
+macro index d ";s+[Gmail]/Trash<enter><enter>" "Move to Gmail's Trash"
+# delete message, but from pager (opened email)
+macro pager d "s+[Gmail]/Trash<enter><enter>"  "Move to Gmail's Trash"
+# undelete messages
+macro index u ";s+INBOX<enter><enter>"         "Move to Gmail's INBOX"
+macro pager u "s+INBOX<enter><enter>"          "Move to Gmail's INBOX"
+
+#-----------------------#
+# Misc. Macros
+#-----------------------#
+macro index .n '<tag-pattern>~N<enter><tag-prefix><clear-flag>N<clear-flag>*' 'Catchup all new messages'
+macro index \eb "<search>~b " "search in message bodies"
+macro index,pager y "<change-folder>?<toggle-mailboxes>" "show incoming mailboxes list"
+bind browser y exit
+set time_inc=250
+macro index,pager \cb '<pipe-message>urlview<enter>'
+
+#-----------------------#
+# Misc. Settings
+#-----------------------#
+set timeout         = 60
+set mail_check      = 120
+set imap_keepalive  = 300
+unset imap_passive
+set header_cache    = ~/.mutt/hcache
+set sort            = threads
+set sort_aux        = reverse-last-date-received
+
+attachments   +A */.*
+attachments   -A text/x-vcard application/pgp.*
+attachments   -A application/x-pkcs7-.*
+
+#-----------------------#
+# Misc. Keybindings
+#-----------------------#
+bind browser g top-page
+bind browser G bottom-page
+bind browser \cb previous-page
+bind browser \cf next-page
+bind browser <Enter> view-file
+bind browser A check-new
+bind pager g   top
+bind pager G   bottom
+bind pager j next-line
+bind pager k previous-line
+bind pager i   edit
+bind pager ' ' next-page
+bind pager +   next-line
+bind pager -   previous-line
+bind pager -   previous-page
+bind pager /   search
+bind pager :   enter-command
+bind pager <down> next-line
+bind pager <up> previous-line
+bind pager G   bottom
+bind pager L   list-reply
+bind pager P   print-message
+bind pager R   list-reply
+bind pager \cd half-down
+bind pager \ce next-line
+bind pager \cf next-page
+bind pager \cm next-line
+bind pager \cn half-down
+bind pager \cn next-page
+bind pager \cp half-up
+bind pager \cu half-up
+bind pager \cy previous-line
+bind index,pager \cn next-thread
+bind index,pager \cn read-thread
+bind index,pager \cd delete-thread
+bind index,pager f forward-message
+bind index,pager n next-undeleted
+bind index,pager p previous-undeleted
+bind index,pager N next-unread
+bind index,pager P previous-unread

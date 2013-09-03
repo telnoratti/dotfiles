@@ -1,0 +1,14 @@
+set folder      = imaps://calvin@winkowski.me@imap.gmail.com/
+mailboxes       = +INBOX =[Gmail]/Drafts =[Gmail]/'Sent Mail' =[Gmail]/Spam =[Gmail]/Trash
+set spoolfile   = +INBOX
+folder-hook     imaps://calvin@winkowski.me@imap.gmail.com/ "\
+    set folder  = imaps://calvin@winkowski.me@imap.gmail.com/ \
+    spoolfile   = +INBOX \
+    postponed   = +[Gmail]/Drafts \
+    record      = +[Gmail]/'Sent Mail' \
+    mbox        = +[Gmail]/'All Mail' \
+    from        = 'Calvin Winkowski <calvin@winkowski.me>' \
+    realname    = 'Calvin Winkowski' \
+    smtp_url    = smtps://calvin@winkowski.me@smtp.gmail.com \
+    smtp_pass   = $my_pass_wi"
+
